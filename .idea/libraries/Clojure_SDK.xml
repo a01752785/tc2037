@@ -1,0 +1,15 @@
+<component name="libraryTable">
+  <library name="Clojure SDK" type="Clojure">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/clojure_sdk/clerk-0.5.346.jar!/" />
+      <root url="jar://$PROJECT_DIR$/clojure_sdk/clojure-1.10.3.jar!/" />
+      <root url="jar://$PROJECT_DIR$/clojure_sdk/core.logic-1.0.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/clojure_sdk/core.specs.alpha-0.2.62.jar!/" />
+      <root url="jar://$PROJECT_DIR$/clojure_sdk/instaparse-1.4.10.jar!/" />
+      <root url="jar://$PROJECT_DIR$/clojure_sdk/math.numeric-tower-0.0.5.jar!/" />
+      <root url="jar://$PROJECT_DIR$/clojure_sdk/spec.alpha-0.3.218.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
