@@ -52,7 +52,7 @@
 ;      (positives (rest s)))))
 ;Usando APIs
 (defn positives
-      "Function that takes a sequence of numbres and returns
+      "Function that takes a sequence of numbers and returns
       a list with only the positive ones."
       [nums]
       (filter pos? nums))
