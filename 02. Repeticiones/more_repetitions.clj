@@ -164,4 +164,31 @@
   (is (not (contains-all-digits? -587230462413578)))
   (is (not (contains-all-digits?
              -122333444455556666667777777888888888999999999))))
+;Problem 10
+(defn pack
+  [s]
+  (partition-by (fn [x] x) s))
+
+(deftest test-pack
+  (is (= () (pack ())))
+  (is (= '((a a a a) (b) (c c) (a a) (d) (e e e e))
+         (pack '(a a a a b c c a a d e e e e))))
+  (is (= '((1) (2) (3) (4) (5)) (pack '(1 2 3 4 5))))
+  (is (= '((9 9 9 9 9 9 9 9 9)) (pack '(9 9 9 9 9 9 9 9 9)))))
+
+;Problem 11
+
+(defn compress
+  [s]
+  (->> s
+       (reduce #(if (or (empty? %1) (not= %2 (first %1))) (cons %2 %1) %1) ())
+       reverse))
+
+(deftest test-compress
+  (is (= () (compress ())))
+  (is (= '(a b c d) (compress '(a b c d))))
+  (is (= '(a b c a d e)
+         (compress '(a a a a b c c a a d e e e e))))
+  (is (= '(a) (compress '(a a a a a a a a a a)))))
+
 (run-tests)
