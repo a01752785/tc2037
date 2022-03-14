@@ -38,7 +38,8 @@
 ;                (insert n (rest s)))))
 ;Usando más API's
 (defn insert
-  "Function that returns a list with the elements of sequence s, inserting n in the correct place."
+  "Function that returns a list with the elements of sequence s,
+   inserting n in the correct place."
   [n s]
   (let [[inicio final] (split-with #(< % n) s)]
     (concat inicio (list n) final)))
@@ -65,7 +66,8 @@
 
 ;Problema 4
 (defn rotate-left
-  "Rotates a sequence to the left n places. If n is negative, performs a rotation to the right."
+  "Rotates a sequence to the left n places. If n is negative,
+  performs a rotation to the right."
   [n s]
   (if (empty? s)
     ()
@@ -88,9 +90,10 @@
 
 ;Problem 5
 (defn binary
-  "Returns a sequence containing the binary representation of the decimal number n"
+  "Returns a sequence containing the binary representation of
+  the decimal number n"
   [n]
-  (if (= n 0)
+  (if (zero? n)
     []
     (conj (binary (quot n 2)) (rem n 2))))
 (deftest test-binary
@@ -201,7 +204,8 @@
 
 ;Problem 10
 (defn pack
-  ""
+  "A function that takes a sequence s. If s contains consecutive
+  repeated elements they are placed and returned in separate sublists."
   [s]
   (partition-by (fn [x] x) s))
 (deftest test-pack
@@ -213,6 +217,10 @@
 
 ;Problem 11
 (defn compress
+  "Function that takes a sequence s. It returns a list with the
+  same elements but repeated consecutive elements are
+  replaced with a single instance. Conserving the order
+  of the original elements."
   [s]
   (map first (pack s)))
 (deftest test-compress
@@ -224,6 +232,9 @@
 
 ;Problem 12
 (defn encode
+  "Function that takes a sequence s and returns a list where
+  consecutive repeated elements are encoded as vectors [n e],
+  where n is the number of repetitions of the element e."
   [s]
   (let [elements (pack s)]
     (map (fn [e] (vector (count e) (first e))) elements)))
@@ -237,6 +248,10 @@
 
 ;Problem 13
 (defn encode-modified
+  "Function that takes a sequence s. It works the same as
+  the encode function, but if an element is single it
+  is simply copied into the result list. Only elements
+  with actual duplicates are converted to [n e] vectors."
   [s]
   (let [elements (pack s)]
     (map (fn [e]
@@ -253,6 +268,9 @@
 
 ;Problem 14
 (defn decode
+  "Function that takes as its input an encoded sequence s that
+  has the same structure as the resulting list from the function
+  encode-modified. It returns the decoded version of s."
   [s]
   (mapcat (fn [e]
             (if (vector? e)
@@ -265,3 +283,5 @@
   (is (= '(1 2 3 4 5) (decode '(1 2 3 4 5))))
   (is (= '(9 9 9 9 9 9 9 9 9) (decode '([9 9])))))
 (run-tests)
+
+
