@@ -150,7 +150,7 @@
 (defn insert-at
   "Auxiliar function that receives an element, a sequence and a position
   and inserts the element in the selected position."
-  [n s i]
+  n s i]
   (concat (first (split-at i s)) (list n) (last (split-at i s))))
 (defn insert-everywhere
   "Returns a sequence with all the possible sequences made by inserting element x in s in all different positions."
