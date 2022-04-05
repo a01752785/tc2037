@@ -1,4 +1,5 @@
 (ns parallelism)
+(require '[clojure.math.numeric-tower :as math :refer [expt]])
 ;(time expresion)
 ;Procesadores logicos: (.availableProcessors (Runtime/getRuntime))
 ;Sp = T1 (1 procesador)/ (p procesadores)Tp
@@ -6,7 +7,7 @@
 (defn bits
   [x]
   (.bitCount (biginteger x)))
-;Sequencial version
+;Sequential version
 (defn fact-seq
   [n]
   (bits
@@ -43,7 +44,7 @@
 ;Sp = 27.5402909/2.5358177 = 10.860516866019
 
 ;Problem 2
-;Sequencial version
+;Sequential version
 (defn compute-pi
   [n]
   (let [width (/ 1 n)]
@@ -84,3 +85,64 @@
 (time (compute-pi n))
 (time (compute-pi-par n))
 ;Problem 3
+
+(defn palindrome?
+  [s]
+  (loop [i 0
+         j (dec (count s))
+         palindrome true]
+    (if (>= i j)
+      palindrome
+      (recur
+        (inc i)
+        (dec j)
+        (and palindrome (= (nth s i) (nth s j)))))))
+
+(defn bin-hex-palindrome?
+  [num]
+  (and (palindrome? (Integer/toBinaryString num))
+       (palindrome? (Integer/toHexString num))))
+
+;Sequential version
+(defn bin-hex-palindromes
+  [n]
+  (loop [num 0
+         counter 0]
+    (if (> num (expt 2 n))
+      counter
+      (recur
+        (inc num)
+        (#(if (bin-hex-palindrome? num)
+            (inc %)
+            %) counter)))))
+
+;Parallel version
+(defn compute-ranges-bin-hex
+  [n p]
+  (partition 2
+             1
+             (concat (range 0 n (quot n p))
+                     [(inc n)])))
+
+(defn bin-hex-palindromes-range
+  [[start end]]
+  (loop [num start
+         counter 0]
+    (if (= num end)
+      counter
+      (recur
+        (inc num)
+        (#(if (bin-hex-palindrome? num)
+            (inc %)
+            %) counter)))))
+
+(defn bin-hex-palindromes-par
+  [n]
+  (->> (.availableProcessors (Runtime/getRuntime))
+       (compute-ranges-bin-hex (expt 2 n))
+       (pmap bin-hex-palindromes-range)
+       (reduce +)))
+
+;Time tests
+(time (bin-hex-palindromes 24))
+(time (bin-hex-palindromes-par 24))
