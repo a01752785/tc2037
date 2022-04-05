@@ -65,16 +65,17 @@
             height (/ 4 (+ 1 (* mid mid)))]
         (recur (inc i) (+ sum height))))))
 (defn compute-pi-ranges
-  [n p]
-  (map concat (partition 2
-             1
-             (concat (range 0 n (quot n p))
-                     [(inc n)])) (repeat 5 (/ 1 n))))
+  [n width p]
+  (map #(concat % [width])
+       (partition 2
+                  1
+                  (concat (range 1 n (quot n p))
+                          [(inc n)]))))
 (defn compute-pi-par
   [n]
   (let [width (/ 1 n)]
     (->> (.availableProcessors (Runtime/getRuntime))
-         (compute-pi-ranges n)
+         (compute-pi-ranges n width)
          (pmap pi-range)
          (reduce +')
          (*' width))))
@@ -82,3 +83,4 @@
 (def n 100000000)
 (time (compute-pi n))
 (time (compute-pi-par n))
+;Problem 3
