@@ -12,10 +12,14 @@
 
 ;Problem 1
 (defn bits
+  "Function that counts the number of bits equal to 1 in the
+  binary representation of any integer value x."
   [x]
   (.bitCount (biginteger x)))
 ;Sequential version
 (defn fact-seq
+  "Function that returns the number of bits equal to 1 from the
+  binary result of the factorial of n, computed sequentialy."
   [n]
   (bits
     (loop [i 1
@@ -25,6 +29,8 @@
         (recur (inc i) (*' i r))))))
 ;Parallel version
 (defn fact-range
+  "Function that computes part of a factorial using a range of numbers,
+  from start to end minus 1."
   [[start end]]
   (loop [i start
          r 1]
@@ -33,6 +39,9 @@
       (recur (inc i) (*' i r)))))
 
 (defn compute-ranges
+  "Function that returns a sequence of sequences representing the
+  start and end of a range whose partial of factorial will be
+  computed."
   [n p]
   (partition 2
              1
@@ -40,6 +49,8 @@
                      [(inc n)])))
 
 (defn fact-par
+  "Function that returns the number of bits equal to 1 from the
+  binary result of the factorial of n, computed using parallelism."
   [n]
   (->> (.availableProcessors (Runtime/getRuntime))
        (compute-ranges n)
@@ -58,6 +69,8 @@
 ;Problem 2
 ;Sequential version
 (defn compute-pi
+  "Function that computes an approximation of Pi using numerical
+  integration (midpoint rectangle rule), sequentialy computed."
   [n]
   (let [width (/ 1 n)]
     (loop [i 0
@@ -69,6 +82,9 @@
           (recur (inc i) (+ sum height)))))))
 ;Parallel version
 (defn pi-range
+  "Function that computes part of a numerical integration using the
+   midpoint rectangle rule, having start and end as its limits, and
+   width as the width of each rectangule in the approximation."
   [[start end width]]
   (loop [i start
          sum 0]
@@ -79,6 +95,9 @@
         (recur (inc i) (+ sum height))))))
 
 (defn compute-pi-ranges
+  "Function that returns a sequence of sequences representing the
+  start and end of a range whose partial numeric integration will
+  be computed."
   [n width p]
   (map #(concat % [width])
        (partition 2
@@ -87,6 +106,8 @@
                           [(inc n)]))))
 
 (defn compute-pi-par
+  "Function that computes an approximation of Pi using numerical
+  integration (midpoint rectangle rule), computed using parallelism."
   [n]
   (let [width (/ 1 n)]
     (->> (.availableProcessors (Runtime/getRuntime))
@@ -105,6 +126,8 @@
 
 ;Problem 3
 (defn palindrome?
+  "Function that returns true if the string given as an input
+  is a palindrome, returns false otherwise."
   [s]
   (loop [i 0
          j (dec (count s))
@@ -117,11 +140,15 @@
         (and palindrome (= (nth s i) (nth s j)))))))
 
 (defn bin-hex-palindrome?
+  "Function that returns true if both the binary and hexadecimal form
+  of the number given are palindromes, returns false otherwise."
   [num]
   (and (palindrome? (Integer/toBinaryString num))
        (palindrome? (Integer/toHexString num))))
 ;Sequential version
 (defn bin-hex-palindromes
+  "Function that counts the amount of bin-hex-palindromes from 0 to
+  2^n., computed sequentialy."
   [n]
   (loop [num 0
          counter 0]
@@ -134,6 +161,9 @@
             %) counter)))))
 ;Parallel version
 (defn compute-ranges-bin-hex
+  "Function that returns a sequence of sequences representing the
+  start and end of a range whose amount of bin-hex-palindromes will
+  be computed."
   [n p]
   (partition 2
              1
@@ -141,6 +171,8 @@
                      [(inc n)])))
 
 (defn bin-hex-palindromes-range
+  "Function that computes the amount of bin-hex-palindromes in the
+  range given from start to end minus 1."
   [[start end]]
   (loop [num start
          counter 0]
@@ -153,6 +185,8 @@
             %) counter)))))
 
 (defn bin-hex-palindromes-par
+  "Function that counts the amount of bin-hex-palindromes from 0 to
+  2^n., computed using parallelism."
   [n]
   (->> (.availableProcessors (Runtime/getRuntime))
        (compute-ranges-bin-hex (expt 2 n))
@@ -169,10 +203,13 @@
 
 ;Problem 4
 (defn create-random-data
+  "Function that creates a sequence of n random numbers from 1 to 999."
   [n]
   (repeatedly n #(rand-int 1000)))
 
 (defn insertion-sort
+  "Function that implements the insertion sort algorithm in the
+  given sequence s."
   [s]
   (loop [s s
          r ()]
@@ -184,6 +221,8 @@
                (concat before [x] after))))))
 
 (defn merge-algorithm
+  "Function that implements the merge algorithm in the pair of
+  sequences given (a and b)."
   [a b]
   (loop [a a
          b b
@@ -195,6 +234,10 @@
       :else (recur a (rest b) (cons (first b) r)))))
 ;Sequential version
 (defn hybrid-sort-seq
+  "Function that implements a hybrid sorting algorithm, which uses
+  insertion sort if the sequence s has less than 100 elements,
+  otherwise splits the sequence in two, ordering them recursively
+  and joining them using the merge algorithm. Works sequentialy."
   [s]
   (if (< (count s) 100)
     (insertion-sort s)
@@ -204,6 +247,10 @@
         (hybrid-sort-seq b)))))
 ;Parallel version
 (defn hybrid-sort-par
+  "Function that implements a hybrid sorting algorithm, which uses
+  insertion sort if the sequence s has less than 100 elements,
+  otherwise splits the sequence in two, ordering them recursively
+  and joining them using the merge algorithm. Works using parallelism."
   [s]
   (if (< (count s) 100)
     (insertion-sort s)
