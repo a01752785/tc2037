@@ -2,8 +2,8 @@
 ; Problem Set #5: Parallel Programming
 ; Date: April 8, 2022.
 ; Authors:
-;          A01770771 Luis Humberto Romero Pérez
-;          A01777771 David Damián Galán
+;          A01752789 Luis Humberto Romero Pérez
+;          A01752785 David Damián Galán
 ;----------------------------------------------------------
 (ns parallelism)
 (require '[clojure.math.numeric-tower :as math :refer [expt]])
@@ -19,7 +19,7 @@
 ;Sequential version
 (defn fact-seq
   "Function that returns the number of bits equal to 1 from the
-  binary result of the factorial of n, computed sequentialy."
+  binary result of the factorial of n, computed sequentially."
   [n]
   (bits
     (loop [i 1
@@ -70,7 +70,7 @@
 ;Sequential version
 (defn compute-pi
   "Function that computes an approximation of Pi using numerical
-  integration (midpoint rectangle rule), sequentialy computed."
+  integration (midpoint rectangle rule), sequentially computed."
   [n]
   (let [width (/ 1 n)]
     (loop [i 0
@@ -84,7 +84,7 @@
 (defn pi-range
   "Function that computes part of a numerical integration using the
    midpoint rectangle rule, having start and end as its limits, and
-   width as the width of each rectangule in the approximation."
+   width as the width of each rectangle in the approximation."
   [[start end width]]
   (loop [i start
          sum 0]
@@ -148,7 +148,7 @@
 ;Sequential version
 (defn bin-hex-palindromes
   "Function that counts the amount of bin-hex-palindromes from 0 to
-  2^n., computed sequentialy."
+  2^n., computed sequentially."
   [n]
   (loop [num 0
          counter 0]
@@ -237,7 +237,7 @@
   "Function that implements a hybrid sorting algorithm, which uses
   insertion sort if the sequence s has less than 100 elements,
   otherwise splits the sequence in two, ordering them recursively
-  and joining them using the merge algorithm. Works sequentialy."
+  and joining them using the merge algorithm. Works sequentially."
   [s]
   (if (< (count s) 100)
     (insertion-sort s)
