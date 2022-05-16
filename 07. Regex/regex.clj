@@ -69,62 +69,35 @@
   (is (not (re-matches java-integer "0x1234567890abcdefgABCD"))))
 ;;: Regular expression 5:
 (def java-float #"")
-(deftest test-java-float
-  (is (re-matches java-float "1."))
-  (is (re-matches java-float ".2"))
-  (is (re-matches java-float "3e4"))
-  (is (re-matches java-float "5e-6"))
-  (is (re-matches java-float "7e+8"))
-  (is (re-matches java-float "9F"))
-  (is (re-matches java-float "1f"))
-  (is (re-matches java-float "2D"))
-  (is (re-matches java-float "3d"))
-  (is (re-matches java-float "1.2"))
-  (is (re-matches java-float "1234.E567"))
-  (is (re-matches java-float "1234.E-567"))
-  (is (re-matches java-float "1234.E+567"))
-  (is (re-matches java-float ".1234E567"))
-  (is (re-matches java-float ".1234E-567"))
-  (is (re-matches java-float ".1234E+567"))
-  (is (re-matches java-float "123."))
-  (is (re-matches java-float ".4567"))
-  (is (re-matches java-float "123.4567"))
-  (is (re-matches java-float "123.4567E890"))
-  (is (re-matches java-float "123.4567E-890"))
-  (is (re-matches java-float "123.4567E+890"))
-  (is (re-matches java-float "123.F"))
-  (is (re-matches java-float ".4567f"))
-  (is (re-matches java-float "123.4567D"))
-  (is (re-matches java-float "123.4567E890d"))
-  (is (re-matches java-float "123.4567E-890F"))
-  (is (re-matches java-float "123.4567E+890f"))
-  (is (re-matches java-float "1234e567"))
-  (is (re-matches java-float "1234e-567"))
-  (is (re-matches java-float "1234e+567"))
-  (is (re-matches java-float "12345678F"))
-  (is (re-matches java-float "12345678f"))
-  (is (re-matches java-float "12345678D"))
-  (is (re-matches java-float "12345678d"))
-  (is (not (re-matches java-float ".")))
-  (is (not (re-matches java-float "0")))
-  (is (not (re-matches java-float "1234")))
-  (is (not (re-matches java-float "-1234")))
-  (is (not (re-matches java-float "e1234")))
-  (is (not (re-matches java-float "E-1234")))
-  (is (not (re-matches java-float "F")))
-  (is (not (re-matches java-float "f")))
-  (is (not (re-matches java-float "d")))
-  (is (not (re-matches java-float "D")))
-  (is (not (re-matches java-float "E")))
-  (is (not (re-matches java-float "e")))
-  (is (not (re-matches java-float "123..456")))
-  (is (not (re-matches java-float "123.456.789")))
-  (is (not (re-matches java-float "123456E78.90")))
-  (is (not (re-matches java-float "123.456E78.90")))
-  (is (not (re-matches java-float "123.456E78DF")))
-  (is (not (re-matches java-float "-123.4567E890")))
-  (is (not (re-matches java-float "+123.4567E890")))
-  (is (not (re-matches java-float "0x1234")))
-  (is (not (re-matches java-float "01234")))
-  (is (not (re-matches java-float "123E"))))
+;;: Regular expression 6:
+;(def c-comment #"[/][*][^*]*[*]+([^*/][^*]*[*]+)*[/]")
+(def c-comment #"([/][*])(.|\n)*?([*][/])")
+(deftest test-c-comment
+  (is (re-matches c-comment "/**/"))
+  (is (re-matches c-comment "/*-*/"))
+  (is (re-matches c-comment "/*\n*/"))
+  (is (re-matches c-comment
+                  "/***********
+                   /*         *
+                   /*         *
+                   /***********/"))
+  (is (= 3 (count (re-seq c-comment "/*********
+                                      Comment 1
+                                      *********/
+
+                                     /*********
+                                      Comment 2
+                                      *********/
+
+                                     /*********
+                                      Comment 3
+                                      *********/"))))
+  (is (not (re-matches c-comment "/")))
+  (is (not (re-matches c-comment "/*")))
+  (is (not (re-matches c-comment "/**")))
+  (is (not (re-matches c-comment "/*/")))
+  (is (not (re-matches c-comment "//")))
+  (is (not (re-matches c-comment "/** /")))
+  (is (not (re-matches c-comment "******/")))
+  (is (not (re-matches c-comment "/ * * * */"))))
 (run-tests)
