@@ -68,7 +68,7 @@
   (is (not (re-matches java-integer "0123456780")))
   (is (not (re-matches java-integer "0x1234567890abcdefgABCD"))))
 ;;: Regular expression 5:
-(def java-float #"")
+(def java-float #"(\d+(\.\d*)|\.\d+)([Ee][+-]?\d+)?([fFdD])?|(\d+)([Ee][+-]?\d+)([fFdD])?|(\d+)([Ee][+-]?\d+)?([fFdD])")
 (deftest test-java-float
   (is (re-matches java-float "1."))
   (is (re-matches java-float ".2"))
