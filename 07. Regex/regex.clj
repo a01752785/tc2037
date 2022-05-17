@@ -1,7 +1,15 @@
+;----------------------------------------------------------
+; Problem Set #7: Regular Expressions
+; Date: May 19, 2022.
+; Authors:
+;          A01752789 Luis Humberto Romero Perez
+;          A01752785 David Damian Galan
+;----------------------------------------------------------
 (ns regex
   (:require [clojure.test :refer [deftest is run-tests]]))
 ;;;Regular expression 1:
-(def c-identifier #"[a-zA-Z_]\w*")
+(def c-identifier "Regex that represents a C identifier"
+  #"[a-zA-Z_]\w*")
 (deftest test-c-identifiers
   (is (re-matches c-identifier "_"))
   (is (re-matches c-identifier "a"))
@@ -17,7 +25,8 @@
   (is (not (re-matches c-identifier "_a_b_c_$"))))
 ;;; Regular expression 2:
 ;(def scheme-boolean #"#([tf]|(true|false))")
-(def scheme-boolean #"#(t(rue)?|f(alse)?)")
+(def scheme-boolean "Regex that represents the scheme boolean literals"
+  #"#(t(rue)?|f(alse)?)")
 (deftest test-scheme-boolean
   (is (re-matches scheme-boolean "#t"))
   (is (re-matches scheme-boolean "#f"))
@@ -35,7 +44,8 @@
   (is (not (re-matches scheme-boolean "#truth")))
   (is (not (re-matches scheme-boolean "#falsy"))))
 ;;: Regular expression 3:
-(def scheme-integer #"\d+|#(b[01]+|o[0-7]+|d\d+|x[0-9a-fA-F]+)")
+(def scheme-integer "Regex that represents the scheme integer literals"
+  #"\d+|#(b[01]+|o[0-7]+|d\d+|x[0-9a-fA-F]+)")
 (deftest test-scheme-integer
   (is (re-matches scheme-integer "0"))
   (is (re-matches scheme-integer "24601"))
@@ -52,7 +62,8 @@
                        "#x1234567890abcdefgABCDEF"))))
 ;;; Regular expression 4:
 ;(def java-integer #"(0[0-7]+|(0|[1-9]\d*)|0[xX][0-9a-fA-F]+)([lL]?)")
-(def java-integer #"(0([0-7]+|[xX][0-9a-fA-F]+)?|[1-9]\d*)[lL]?")
+(def java-integer "Regex that represents the Java integer literals"
+  #"(0([0-7]+|[xX][0-9a-fA-F]+)?|[1-9]\d*)[lL]?")
 (deftest test-java-integer
   (is (re-matches java-integer "0"))
   (is (re-matches java-integer "1234567890"))
@@ -68,7 +79,8 @@
   (is (not (re-matches java-integer "0123456780")))
   (is (not (re-matches java-integer "0x1234567890abcdefgABCD"))))
 ;;: Regular expression 5:
-(def java-float #"(\d+(\.\d*)|\.\d+)([Ee][+-]?\d+)?([fFdD])?|(\d+)([Ee][+-]?\d+)([fFdD])?|(\d+)([Ee][+-]?\d+)?([fFdD])")
+(def java-float "Regex that represents the Java floating-point literals"
+  #"(\d+(\.\d*)|\.\d+)([Ee][+-]?\d+)?([fFdD])?|(\d+)([Ee][+-]?\d+)([fFdD])?|(\d+)([Ee][+-]?\d+)?([fFdD])")
 (deftest test-java-float
   (is (re-matches java-float "1."))
   (is (re-matches java-float ".2"))
@@ -129,7 +141,8 @@
   (is (not (re-matches java-float "123E"))))
 ;;: Regular expression 6:
 ;(def c-comment #"[/][*][^*]*[*]+([^*/][^*]*[*]+)*[/]")
-(def c-comment #"([/][*])(.|\n)*?([*][/])")
+(def c-comment "Regex that represents a C comment"
+  #"([/][*])(.|\n)*?([*][/])")
 (deftest test-c-comment
   (is (re-matches c-comment "/**/"))
   (is (re-matches c-comment "/*-*/"))
