@@ -127,4 +127,36 @@
   (is (not (re-matches java-float "0x1234")))
   (is (not (re-matches java-float "01234")))
   (is (not (re-matches java-float "123E"))))
+;;: Regular expression 6:
+;(def c-comment #"[/][*][^*]*[*]+([^*/][^*]*[*]+)*[/]")
+(def c-comment #"([/][*])(.|\n)*?([*][/])")
+(deftest test-c-comment
+  (is (re-matches c-comment "/**/"))
+  (is (re-matches c-comment "/*-*/"))
+  (is (re-matches c-comment "/*\n*/"))
+  (is (re-matches c-comment
+                  "/***********
+                   /*         *
+                   /*         *
+                   /***********/"))
+  (is (= 3 (count (re-seq c-comment "/*********
+                                      Comment 1
+                                      *********/
+
+                                     /*********
+                                      Comment 2
+                                      *********/
+
+                                     /*********
+                                      Comment 3
+                                      *********/"))))
+  (is (not (re-matches c-comment "/")))
+  (is (not (re-matches c-comment "/*")))
+  (is (not (re-matches c-comment "/**")))
+  (is (not (re-matches c-comment "/*/")))
+  (is (not (re-matches c-comment "//")))
+  (is (not (re-matches c-comment "/** /")))
+  (is (not (re-matches c-comment "******/")))
+  (is (not (re-matches c-comment "/ * * * */"))))
+
 (run-tests)
