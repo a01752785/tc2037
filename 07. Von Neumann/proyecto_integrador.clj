@@ -44,6 +44,7 @@
    12 (make-operation *)
    13 (make-operation quot)
    14 (make-operation rem)
+   16 (make-operation #(if (= %1 %2) 1 0))
    25 out
    })
 
@@ -72,3 +73,5 @@
 (execute [4 2 4 7 10 25 0] 10)
 
 (execute [4 2 4 7 11 25 0] 10)
+
+(execute [4 20 4 20 16 25 0] 10)
