@@ -19,6 +19,10 @@
   (assoc machine :pc (inc pc)))
 
 (defn ld
+  "Function that takes a von neumann machine and pushes to the stack
+  the value inside the index referred by the memory at position program
+  counter + 1. Returns a new machine with the program counter increased
+  by 2 and de stack pointer reduced by 1."
   [{:keys [memory pc sp] :as machine}]
   (assoc machine
     :memory (assoc memory
