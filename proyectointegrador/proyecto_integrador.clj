@@ -3,6 +3,8 @@
 (defrecord Machine [memory pc sp])
 
 (defn make-machine
+  "Function that creates an instance of the record Machine,
+  initializing it with a piece of code and the size of its memory."
   [code size]
   (->Machine (vec (take size (concat code
                                      (repeat 0))))
@@ -10,6 +12,9 @@
              size))
 
 (defn nop
+  "Function that takes a von neumann machine and performs
+  no operation on it. Returns a new machine with the program
+  counter increased."
   [{:keys [memory pc sp] :as machine}]
   (assoc machine :pc (inc pc)))
 
@@ -23,6 +28,9 @@
     :sp (dec sp)))
 
 (defn ct
+  "Function that takes a von neumann machine and pushes a constant
+  value to the stack. Returns a new machine with the program
+  counter increased by 2 and the stack pointer reduced by 1."
   [{:keys [memory pc sp] :as machine}]
   (assoc machine
     :memory (assoc memory
@@ -32,6 +40,9 @@
     :sp (dec sp)))
 
 (defn out
+  "Function that takes a von neumann machine, prints the top
+  value of the stack and removes it. Returns a new machine with
+  the program counter and the stack pointer increased."
   [{:keys [memory pc sp] :as machine}]
   (print (str (memory sp) " "))
   (assoc machine
@@ -39,8 +50,14 @@
     :sp (inc sp)))
 
 (defn make-operation
+  "Function that receives an operation function and returns a new
+  function that applies that operation."
   [operation]
   (fn [{:keys [memory pc sp] :as machine}]
+    "Function that takes a von neumann machine and pushes the result
+    of applying an operation to the two top-most elements currently
+    in the stack. Returns a new machine with the program counter
+    and the stack pointer increased."
     (assoc machine
       :memory (assoc memory
                 (inc sp)
@@ -79,6 +96,9 @@
    })
 
 (defn execute
+  "Function that takes a machine code in the form of a vector
+  and the size of the machine memory and executes it following the
+  opcode dictionary."
   [code size]
   (loop [machine (make-machine code size)]
     (let [{:keys [memory pc sp]} machine
