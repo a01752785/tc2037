@@ -23,7 +23,7 @@
   (assoc machine
     :memory (assoc memory
               (dec sp)
-              (nth memory (inc pc)))
+              (nth memory (nth memory (inc pc))))
     :pc (+ pc 2)
     :sp (dec sp)))
 
