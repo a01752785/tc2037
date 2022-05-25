@@ -84,7 +84,7 @@
     (let [{:keys [memory pc sp]} machine
           opcode (memory pc)]
       (if (zero? opcode)
-        (println "\nProgram terminated.")
+        (print "\nProgram terminated.\n")
         (if (contains? operations opcode)
           (recur ((operations opcode) machine))
           (throw (ex-info (str "Invalid opcode: " opcode) ())))))))
