@@ -27,6 +27,17 @@
     :pc (+ pc 2)
     :sp (dec sp)))
 
+(defn ldi
+  "Function that takes a von neumann machine and pushes to the stack
+  the value inside the index referred by the top of the stack.
+  Returns a new machine with the program counter increased."
+  [{:keys [memory pc sp] :as machine}]
+  (assoc machine
+    :memory (assoc memory
+              sp
+              (nth memory (nth memory sp)))
+    :pc (inc pc)))
+
 (defn ct
   "Function that takes a von neumann machine and pushes a constant
   value to the stack. Returns a new machine with the program
@@ -70,7 +81,7 @@
   {
    1 nop
    2 ld
-   3 nop
+   3 ldi
    4 ct
    5 nop
    6 nop
@@ -82,6 +93,7 @@
    12 (make-operation *)
    13 (make-operation quot)
    14 (make-operation rem)
+   15 nop
    16 (make-operation #(if (= %1 %2) 1 0))
    17 (make-operation #(if (not= %1 %2) 1 0))
    18 (make-operation #(if (< %1 %2) 1 0))
