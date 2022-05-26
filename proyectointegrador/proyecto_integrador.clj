@@ -1,4 +1,5 @@
-(ns proyecto-integrador)
+(ns proyecto-integrador
+  (:require [clojure.test :refer [deftest is run-tests]]))
 
 (defrecord Machine [memory pc sp])
 
@@ -54,6 +55,84 @@
     :pc (+ pc 2)
     :sp (dec sp)))
 
+(defn st
+  "Function that takes a von neumann machine, pops a value from
+  the stack and stores it at memory location."
+  [{:keys [memory pc sp] :as machine}]
+  (assoc machine
+    :memory (assoc memory
+              (nth memory (inc pc))
+              (memory sp))
+    :pc (+ pc 2)
+    :sp (inc sp)))
+
+(defn sti
+  "Function that takes a von neumann machine, pops an index from
+  the stack, then pops a value from the stack
+  and stores the value at the memory location of the index."
+  [{:keys [memory pc sp] :as machine}]
+  (assoc machine
+    :memory (assoc memory
+              (nth memory sp)
+              (memory (inc sp)))
+    :pc (inc pc)
+    :sp (+ sp 2)))
+
+(defn vnm-pop
+  "Function that takes a von neumann machine and discards the
+  top of the stack."
+  [{:keys [memory pc sp] :as machine}]
+  (assoc machine
+    :pc (inc pc)
+    :sp (inc sp)))
+
+(defn swp
+  "Function that takes a von neumann machine, pops two elements
+  from the stack and push them back in reverse order."
+  [{:keys [memory pc sp] :as machine}]
+  (let [t1 (memory sp)
+        t2 (memory (inc sp))]
+    (assoc machine
+      :memory (assoc memory
+                sp
+                t2
+                (inc sp)
+                t1)
+      :pc (inc pc))))
+
+(defn dup
+  "Function that takes a von neumann machine, pops a value from
+  the stack and push it back twice."
+  [{:keys [memory pc sp] :as machine}]
+  (assoc machine
+    :memory (assoc memory
+              (dec sp)
+              (memory sp))
+    :pc (inc pc)
+    :sp (dec sp)))
+
+(defn eqz
+  "Function that takes a von neumann machine, pops the top
+  of the stack and if the value is equal to zero push 1,
+  otherwise push 0."
+  [{:keys [memory pc sp] :as machine}]
+  (assoc machine
+    :memory (if (zero? (memory sp))
+              (assoc memory
+                sp
+                1)
+              (assoc memory
+                sp
+                0))
+    :pc (inc pc)))
+
+(defn jp
+  "Function that takes a von neumann machine and continues
+  program execution at the instruction contained at memory
+  location index."
+  [{:keys [memory pc sp] :as machine}]
+  (assoc machine :pc (memory (inc pc))))
+
 (defn out
   "Function that takes a von neumann machine, prints the top
   value of the stack and removes it. Returns a new machine with
@@ -63,6 +142,7 @@
   (assoc machine
     :pc (inc pc)
     :sp (inc sp)))
+
 
 (defn make-operation
   "Function that receives an operation function and returns a new
@@ -87,24 +167,24 @@
    2 ld
    3 ldi
    4 ct
-   5 nop
-   6 nop
-   7 nop
-   8 nop
-   9 nop
+   5 st
+   6 sti
+   7 vnm-pop
+   8 swp
+   9 dup
    10 (make-operation +)
    11 (make-operation -)
    12 (make-operation *)
    13 (make-operation quot)
    14 (make-operation rem)
-   15 nop
+   15 eqz
    16 (make-operation #(if (= %1 %2) 1 0))
    17 (make-operation #(if (not= %1 %2) 1 0))
    18 (make-operation #(if (< %1 %2) 1 0))
    19 (make-operation #(if (<= %1 %2) 1 0))
    20 (make-operation #(if (> %1 %2) 1 0))
    21 (make-operation #(if (>= %1 %2) 1 0))
-   22 nop
+   22 jp
    23 nop
    24 nop
    25 out
@@ -125,5 +205,9 @@
           (recur ((operations opcode) machine))
           (throw (ex-info (str "Invalid opcode: " opcode) ())))))))
 
+(deftest test-swp
+  (is (= "17 19 \nProgram terminated.\n"
+         (with-out-str
+           (execute [4 17 4 19 8 25 25 0] 128)))))
 
-(execute [2 2 25] 20)
+(run-tests)
