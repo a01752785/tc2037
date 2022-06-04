@@ -4,6 +4,7 @@
     ld y
     add
     out
+    hlt
 
-label x data 40
-label y data 2
+label x data +40
+label y data -2

@@ -246,14 +246,40 @@
    'out 25
    'chr 26
    })
+
 (defn correct-syntax?
   [tokens]
   true)
 
+(defn replace-labels
+  [code labels]
+  (println labels)
+  (map #(labels % %) code))
+
 (defn assembling-handler
   [tokens]
-  (->> (map #(tokens-to-opcodes % %) tokens)
-       ))
+    (loop [code []
+           tokens tokens
+           labels {}]
+      (if (zero? (count tokens))
+        (replace-labels (reverse code) labels)
+        (cond
+          ; Add to the labels map a binding pointing to the next free index of memory
+          (= 'label (first tokens)) (recur code
+                                           (rest (rest tokens))
+                                           (assoc labels
+                                             (first (rest tokens)) (count code)))
+
+          ; Add to the code a value of data in the next free index of memory
+          (= 'data (first tokens)) (recur (cons (second tokens)
+                                                code)
+                                          (rest (rest tokens))
+                                          labels)
+
+          ; Convert token to opcode and add to the code
+          :else (recur (cons (tokens-to-opcodes (first tokens) (first tokens)) code)
+                       (rest tokens)
+                       labels)))))
 
 (defn assemble
   [file-name]
