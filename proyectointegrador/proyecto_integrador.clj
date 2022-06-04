@@ -268,7 +268,7 @@
           (= 'label (first tokens)) (recur code
                                            (rest (rest tokens))
                                            (assoc labels
-                                             (first (rest tokens)) (count code)))
+                                             (second tokens) (count code)))
 
           ; Add to the code a value of data in the next free index of memory
           (= 'data (first tokens)) (recur (cons (second tokens)
