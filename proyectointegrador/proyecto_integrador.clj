@@ -205,9 +205,61 @@
           (recur ((operations opcode) machine))
           (throw (ex-info (str "Invalid opcode: " opcode) ())))))))
 
-(deftest test-swp
-  (is (= "17 19 \nProgram terminated.\n"
-         (with-out-str
-           (execute [4 17 4 19 8 25 25 0] 128)))))
 
-(run-tests)
+(defn tokenizer
+  [file-name]
+  (as-> (slurp file-name) here
+        (clojure.string/replace here
+                                #";.*"
+                                "")
+        (clojure.string/split here
+                              #"\s+")
+        (remove #(= % "") here)
+        (map clojure.edn/read-string here)))
+
+(def tokens-to-opcodes
+  {
+   'hlt 0
+   'nop 1
+   'ld 2
+   'ldi 3
+   'ct 4
+   'st 5
+   'sti 6
+   'pop 7
+   'swp 8
+   'dup 9
+   'add 10
+   'sub 11
+   'mul 12
+   'div 13
+   'rem 14
+   'eqz 15
+   'ceq 16
+   'cne 17
+   'clt 18
+   'cle 19
+   'cgt 20
+   'cge 21
+   'jp 22
+   'jpi 24
+   'out 25
+   'chr 26
+   })
+(defn correct-syntax?
+  [tokens]
+  true)
+
+(defn assembling-handler
+  [tokens]
+  (->> (map #(tokens-to-opcodes % %) tokens)
+       ))
+
+(defn assemble
+  [file-name]
+  (let [tokens (tokenizer file-name)]
+    (if (correct-syntax? tokens)
+      (assembling-handler tokens)
+      nil)))
+
+(assemble "proyectointegrador/suma.von")

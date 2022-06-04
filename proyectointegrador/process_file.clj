@@ -1,6 +1,6 @@
 (ns process-file)
 
-(as-> (slurp "/examples/suma.von") here
+(as-> (slurp "proyectointegrador/suma.von") here
       (clojure.string/replace here
                               #";.*"
                               "")
