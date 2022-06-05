@@ -279,9 +279,24 @@
    'chr 26
    })
 
+(defn correct-operands?
+  [tokens]
+  (loop [tokens tokens]
+    (if (zero? (count tokens))
+      true
+      (if (or (= 'ld (first tokens))
+              (= 'ct (first tokens))
+              (= 'st (first tokens))
+              (= 'jp (first tokens))
+              (= 'jpc (first tokens)))
+        (if (not (contains? tokens-to-opcodes (second tokens)))
+          (recur (rest tokens))
+          (throw (Exception. (str "Invalid syntax error after: " (first tokens)))))
+        (recur (rest tokens))))))
+
 (defn correct-syntax?
   [tokens]
-  true)
+    (correct-operands? tokens))
 
 (defn replace-labels
   [code labels]
