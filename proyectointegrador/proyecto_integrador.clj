@@ -1,5 +1,4 @@
-(ns proyecto-integrador
-  (:require [clojure.test :refer [deftest is run-tests]]))
+(ns proyecto-integrador)
 
 (defrecord Machine [memory pc sp])
 
@@ -133,12 +132,44 @@
   [{:keys [memory pc sp] :as machine}]
   (assoc machine :pc (memory (inc pc))))
 
+(defn jpc
+  "Function that takes a von neumann machine, pops a value from the
+  stack and if it’s not equal to zero continues program execution
+  at the instruction contained at memory location index,
+  otherwise continue with next instruction."
+  [{:keys [memory pc sp] :as machine}]
+  (assoc machine
+    :pc (if (not= (memory sp) 0)
+          (memory (inc pc))
+          (+ pc 2))
+    :sp (inc sp)))
+
+(defn jpi
+  "Function that takes a von neumann machine, pops index
+  from the stack. Continue program execution at the instruction
+  contained at memory location index."
+  [{:keys [memory pc sp] :as machine}]
+  (assoc machine
+    :pc (memory sp)
+    :sp (inc sp)))
+
 (defn out
   "Function that takes a von neumann machine, prints the top
   value of the stack and removes it. Returns a new machine with
   the program counter and the stack pointer increased."
   [{:keys [memory pc sp] :as machine}]
   (print (str (memory sp) " "))
+  (assoc machine
+    :pc (inc pc)
+    :sp (inc sp)))
+
+(defn chr
+  "Function that takes a von neumann machine, pops a value
+  from the stack, prints to the standard output the character
+  with a Unicode code point equal to value. Returns a new machine
+  with the program counter and the stack pointer increased."
+  [{:keys [memory pc sp] :as machine}]
+  (print (char (memory sp)))
   (assoc machine
     :pc (inc pc)
     :sp (inc sp)))
@@ -185,10 +216,10 @@
    20 (make-operation #(if (> %1 %2) 1 0))
    21 (make-operation #(if (>= %1 %2) 1 0))
    22 jp
-   23 nop
-   24 nop
+   23 jpc
+   24 jpi
    25 out
-   26 nop
+   26 chr
    })
 
 (defn execute
@@ -204,10 +235,3 @@
         (if (contains? operations opcode)
           (recur ((operations opcode) machine))
           (throw (ex-info (str "Invalid opcode: " opcode) ())))))))
-
-(deftest test-swp
-  (is (= "17 19 \nProgram terminated.\n"
-         (with-out-str
-           (execute [4 17 4 19 8 25 25 0] 128)))))
-
-(run-tests)
