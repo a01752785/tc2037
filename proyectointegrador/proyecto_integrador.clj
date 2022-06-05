@@ -235,3 +235,88 @@
         (if (contains? operations opcode)
           (recur ((operations opcode) machine))
           (throw (ex-info (str "Invalid opcode: " opcode) ())))))))
+
+
+(defn tokenizer
+  [file-name]
+  (as-> (slurp file-name) here
+        (clojure.string/replace here
+                                #";.*"
+                                "")
+        (clojure.string/split here
+                              #"\s+")
+        (remove #(= % "") here)
+        (map clojure.edn/read-string here)))
+
+(def tokens-to-opcodes
+  {
+   'hlt 0
+   'nop 1
+   'ld 2
+   'ldi 3
+   'ct 4
+   'st 5
+   'sti 6
+   'pop 7
+   'swp 8
+   'dup 9
+   'add 10
+   'sub 11
+   'mul 12
+   'div 13
+   'rem 14
+   'eqz 15
+   'ceq 16
+   'cne 17
+   'clt 18
+   'cle 19
+   'cgt 20
+   'cge 21
+   'jp 22
+   'jpi 24
+   'out 25
+   'chr 26
+   })
+
+(defn correct-syntax?
+  [tokens]
+  true)
+
+(defn replace-labels
+  [code labels]
+  (println labels)
+  (map #(labels % %) code))
+
+(defn assembling-handler
+  [tokens]
+    (loop [code []
+           tokens tokens
+           labels {}]
+      (if (zero? (count tokens))
+        (replace-labels (reverse code) labels)
+        (cond
+          ; Add to the labels map a binding pointing to the next free index of memory
+          (= 'label (first tokens)) (recur code
+                                           (rest (rest tokens))
+                                           (assoc labels
+                                             (second tokens) (count code)))
+
+          ; Add to the code a value of data in the next free index of memory
+          (= 'data (first tokens)) (recur (cons (second tokens)
+                                                code)
+                                          (rest (rest tokens))
+                                          labels)
+
+          ; Convert token to opcode and add to the code
+          :else (recur (cons (tokens-to-opcodes (first tokens) (first tokens)) code)
+                       (rest tokens)
+                       labels)))))
+
+(defn assemble
+  [file-name]
+  (let [tokens (tokenizer file-name)]
+    (if (correct-syntax? tokens)
+      (assembling-handler tokens)
+      nil)))
+
+(assemble "proyectointegrador/suma.von")

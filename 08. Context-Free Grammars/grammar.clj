@@ -122,7 +122,7 @@
   "A language that accepts a nonempty sequence of consecutive
   symbols x followed by a nonempty sequence of consecutive
   symbols y. The number of symbols x has to be exactly twice
-  the number of symbols."
+  the number of symbols y."
   (parser "
   S = X T 'y'
   T = epsilon

@@ -1,0 +1,40 @@
+; Calcular e imprimir el factorial de n
+
+label inicio_ciclo
+
+    ;;; Terminar ciclo si: i > n
+    ld i
+    ld n
+    cgt
+    jpc salir_ciclo
+
+    ;;; r = r * i
+    ld r
+    ld i
+    mul
+    st r
+
+    ;;; i++
+    ld i
+    ct 1
+    add
+    st i
+
+    jp inicio_ciclo
+
+label salir_ciclo
+
+    ;;; Imprimir r
+    ld r
+    out
+
+    ;;; Terminar programa
+    hlt
+
+;;; Sección de datos
+label n
+    data 5
+label r
+    data 1
+label i
+    data 1
