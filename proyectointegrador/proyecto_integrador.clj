@@ -273,6 +273,7 @@
    'cgt 20
    'cge 21
    'jp 22
+   'jpc 23
    'jpi 24
    'out 25
    'chr 26
