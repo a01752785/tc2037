@@ -308,10 +308,46 @@
         (recur (rest tokens) ; Not a label
                labels)))))
 
+(defn not-missing-declaration?
+  [tokens]
+  (loop [tokens tokens
+         used-labels #{}
+         declared-labels #{}]
+    (if (zero? (count tokens))
+      ; Compute difference between the used labels and the declared labels
+      (let [missing-labels (clojure.set/difference used-labels declared-labels)]
+        (if (not (empty? missing-labels))
+          ; There are missing declarations
+          (throw (Exception. (str "Missing label declaration of:" missing-labels)))
+          ; No missing declarations
+          true))
+      ; Check if the next token is an operation needing a value, with a label
+      (if (and (or (= 'ld (first tokens))
+                   (= 'ct (first tokens))
+                   (= 'st (first tokens))
+                   (= 'jp (first tokens))
+                   (= 'jpc (first tokens)))
+               (instance? clojure.lang.Symbol (second tokens)))
+        ; Add current label to used-labels
+        (recur (rest tokens)
+               (conj used-labels (second tokens))
+               declared-labels)
+        ; Check if next token is a label directive
+        (if (= 'label (first tokens))
+          ; Add current label to declared-labels
+          (recur (rest tokens)
+                 used-labels
+                 (conj declared-labels (second tokens)))
+          ; Not an operation with value or label directive
+          (recur (rest tokens)
+                 used-labels
+                 declared-labels))))))
+
 (defn correct-syntax?
   [tokens]
     (and (correct-operands? tokens)
-         (not-redefined-labels? tokens)))
+         (not-redefined-labels? tokens)
+         (not-missing-declaration? tokens)))
 
 (defn replace-labels
   [code labels]
