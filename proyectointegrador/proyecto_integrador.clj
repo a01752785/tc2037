@@ -294,9 +294,24 @@
           (throw (Exception. (str "Invalid syntax error after: " (first tokens)))))
         (recur (rest tokens))))))
 
+(defn not-redefined-labels?
+  [tokens]
+  (loop [tokens tokens
+         labels #{}]
+    (if (zero? (count tokens))
+      true
+      (if (= 'label (first tokens))
+        (if (contains? labels (second tokens)) ; Already defined label
+          (throw (Exception. (str "Redefined label error with: " (second tokens))))
+          (recur (rest (rest tokens)) ; Add current label to the labels set
+                 (conj labels (second tokens))))
+        (recur (rest tokens) ; Not a label
+               labels)))))
+
 (defn correct-syntax?
   [tokens]
-    (correct-operands? tokens))
+    (and (correct-operands? tokens)
+         (not-redefined-labels? tokens)))
 
 (defn replace-labels
   [code labels]
