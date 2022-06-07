@@ -35,8 +35,8 @@ jobs:
           echo test, and deploy your project.
           
       - name: clj-kondo checks
-      - uses: actions/checkout@v1
-      - uses: DeLaGuardo/clojure-lint-action@master
+        uses: actions/checkout@v1
+        uses: DeLaGuardo/clojure-lint-action@master
         with:
           clj-kondo-args: --lint src
           # check-name is optional
