@@ -36,6 +36,7 @@ jobs:
           
       - name: clj-kondo checks
         uses: actions/checkout@v1
+      - name: clj-kondo checks 2
         uses: DeLaGuardo/clojure-lint-action@master
         with:
           clj-kondo-args: --lint src
