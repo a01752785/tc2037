@@ -256,6 +256,9 @@
 
 
 (defn tokenizer
+  "Function that takes the name of a file containing a Von
+  Neumann Assembly script and converts it to a sequence of symbols
+  and numbers corresponding to the file. It ignores comments."
   [file-name]
   (as-> (slurp file-name) here
         (clojure.string/replace here
@@ -298,6 +301,9 @@
 
 
 (defn correct-operands?
+  "Function that takes a sequence of assembly tokens and verifies that
+  a value exists where it is expected. Returns true if operands are correct,
+  throws an exception otherwise."
   [tokens]
   (loop [tokens tokens]
     (if (zero? (count tokens))
@@ -314,6 +320,9 @@
 
 
 (defn not-redefined-labels?
+  "Function that receives a sequence of assembly tokens and verifies that
+  there are not redefined labels. Returns true if checks are correct,
+  throws an exception otherwise."
   [tokens]
   (loop [tokens tokens
          labels #{}]
@@ -329,6 +338,9 @@
 
 
 (defn not-missing-declaration?
+  "Function that receives a sequence of assembly tokens and verifies that
+  there are not missing declarations of labels. Returns true if checks
+  are correct, throws an exception otherwise."
   [tokens]
   (loop [tokens tokens
          used-labels #{}
@@ -365,6 +377,9 @@
 
 
 (defn correct-syntax?
+  "Function that receives a sequence of assembly tokens and
+  verifies that its syntax is correct. Returns true if all checks
+  are correct. An exception is thrown otherwise."
   [tokens]
   (and (correct-operands? tokens)
        (not-redefined-labels? tokens)
@@ -372,12 +387,18 @@
 
 
 (defn replace-labels
+  "Function that takes a sequence representing the machine code
+  and a dictionary with pairs (label, value) and replaces labels
+  found in the code to its corresponding number value. Returns
+  a new sequence with the labels replaced."
   [code labels]
   (println labels)
   (map #(labels % %) code))
 
 
 (defn assembling-handler
+  "Function that takes a sequence of assembly tokens and returns
+  a sequence corresponding to the Von Neumann machine code."
   [tokens]
   (loop [code []
          tokens tokens
@@ -404,6 +425,9 @@
 
 
 (defn assemble
+  "Function that receives the name of a file containing
+  Von Neumman Assembly code and transforms the code into
+  machine code. Returns a sequence with the machine code."
   [file-name]
   (let [tokens (tokenizer file-name)]
     (if (correct-syntax? tokens)
