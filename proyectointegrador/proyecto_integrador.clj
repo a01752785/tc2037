@@ -1,6 +1,9 @@
 (ns proyecto-integrador)
 
-(defrecord Machine [memory pc sp])
+
+(defrecord Machine
+  [memory pc sp])
+
 
 (defn make-machine
   "Function that creates an instance of the record Machine,
@@ -11,12 +14,14 @@
              0
              size))
 
+
 (defn nop
   "Function that takes a von neumann machine and performs
   no operation on it. Returns a new machine with the program
   counter increased."
   [{:keys [memory pc sp] :as machine}]
   (assoc machine :pc (inc pc)))
+
 
 (defn ld
   "Function that takes a von neumann machine and pushes to the stack
@@ -25,11 +30,12 @@
   by 2 and de stack pointer reduced by 1."
   [{:keys [memory pc sp] :as machine}]
   (assoc machine
-    :memory (assoc memory
-              (dec sp)
-              (nth memory (nth memory (inc pc))))
-    :pc (+ pc 2)
-    :sp (dec sp)))
+         :memory (assoc memory
+                        (dec sp)
+                        (nth memory (nth memory (inc pc))))
+         :pc (+ pc 2)
+         :sp (dec sp)))
+
 
 (defn ldi
   "Function that takes a von neumann machine and pushes to the stack
@@ -37,10 +43,11 @@
   Returns a new machine with the program counter increased."
   [{:keys [memory pc sp] :as machine}]
   (assoc machine
-    :memory (assoc memory
-              sp
-              (nth memory (nth memory sp)))
-    :pc (inc pc)))
+         :memory (assoc memory
+                        sp
+                        (nth memory (nth memory sp)))
+         :pc (inc pc)))
+
 
 (defn ct
   "Function that takes a von neumann machine and pushes a constant
@@ -48,22 +55,24 @@
   counter increased by 2 and the stack pointer reduced by 1."
   [{:keys [memory pc sp] :as machine}]
   (assoc machine
-    :memory (assoc memory
-              (dec sp)
-              (memory (inc pc)))
-    :pc (+ pc 2)
-    :sp (dec sp)))
+         :memory (assoc memory
+                        (dec sp)
+                        (memory (inc pc)))
+         :pc (+ pc 2)
+         :sp (dec sp)))
+
 
 (defn st
   "Function that takes a von neumann machine, pops a value from
   the stack and stores it at memory location."
   [{:keys [memory pc sp] :as machine}]
   (assoc machine
-    :memory (assoc memory
-              (nth memory (inc pc))
-              (memory sp))
-    :pc (+ pc 2)
-    :sp (inc sp)))
+         :memory (assoc memory
+                        (nth memory (inc pc))
+                        (memory sp))
+         :pc (+ pc 2)
+         :sp (inc sp)))
+
 
 (defn sti
   "Function that takes a von neumann machine, pops an index from
@@ -71,19 +80,21 @@
   and stores the value at the memory location of the index."
   [{:keys [memory pc sp] :as machine}]
   (assoc machine
-    :memory (assoc memory
-              (nth memory sp)
-              (memory (inc sp)))
-    :pc (inc pc)
-    :sp (+ sp 2)))
+         :memory (assoc memory
+                        (nth memory sp)
+                        (memory (inc sp)))
+         :pc (inc pc)
+         :sp (+ sp 2)))
+
 
 (defn vnm-pop
   "Function that takes a von neumann machine and discards the
   top of the stack."
   [{:keys [memory pc sp] :as machine}]
   (assoc machine
-    :pc (inc pc)
-    :sp (inc sp)))
+         :pc (inc pc)
+         :sp (inc sp)))
+
 
 (defn swp
   "Function that takes a von neumann machine, pops two elements
@@ -92,23 +103,25 @@
   (let [t1 (memory sp)
         t2 (memory (inc sp))]
     (assoc machine
-      :memory (assoc memory
-                sp
-                t2
-                (inc sp)
-                t1)
-      :pc (inc pc))))
+           :memory (assoc memory
+                          sp
+                          t2
+                          (inc sp)
+                          t1)
+           :pc (inc pc))))
+
 
 (defn dup
   "Function that takes a von neumann machine, pops a value from
   the stack and push it back twice."
   [{:keys [memory pc sp] :as machine}]
   (assoc machine
-    :memory (assoc memory
-              (dec sp)
-              (memory sp))
-    :pc (inc pc)
-    :sp (dec sp)))
+         :memory (assoc memory
+                        (dec sp)
+                        (memory sp))
+         :pc (inc pc)
+         :sp (dec sp)))
+
 
 (defn eqz
   "Function that takes a von neumann machine, pops the top
@@ -116,14 +129,15 @@
   otherwise push 0."
   [{:keys [memory pc sp] :as machine}]
   (assoc machine
-    :memory (if (zero? (memory sp))
-              (assoc memory
-                sp
-                1)
-              (assoc memory
-                sp
-                0))
-    :pc (inc pc)))
+         :memory (if (zero? (memory sp))
+                   (assoc memory
+                          sp
+                          1)
+                   (assoc memory
+                          sp
+                          0))
+         :pc (inc pc)))
+
 
 (defn jp
   "Function that takes a von neumann machine and continues
@@ -132,6 +146,7 @@
   [{:keys [memory pc sp] :as machine}]
   (assoc machine :pc (memory (inc pc))))
 
+
 (defn jpc
   "Function that takes a von neumann machine, pops a value from the
   stack and if it’s not equal to zero continues program execution
@@ -139,10 +154,11 @@
   otherwise continue with next instruction."
   [{:keys [memory pc sp] :as machine}]
   (assoc machine
-    :pc (if (not= (memory sp) 0)
-          (memory (inc pc))
-          (+ pc 2))
-    :sp (inc sp)))
+         :pc (if (not= (memory sp) 0)
+               (memory (inc pc))
+               (+ pc 2))
+         :sp (inc sp)))
+
 
 (defn jpi
   "Function that takes a von neumann machine, pops index
@@ -150,8 +166,9 @@
   contained at memory location index."
   [{:keys [memory pc sp] :as machine}]
   (assoc machine
-    :pc (memory sp)
-    :sp (inc sp)))
+         :pc (memory sp)
+         :sp (inc sp)))
+
 
 (defn out
   "Function that takes a von neumann machine, prints the top
@@ -160,8 +177,9 @@
   [{:keys [memory pc sp] :as machine}]
   (print (str (memory sp) " "))
   (assoc machine
-    :pc (inc pc)
-    :sp (inc sp)))
+         :pc (inc pc)
+         :sp (inc sp)))
+
 
 (defn chr
   "Function that takes a von neumann machine, pops a value
@@ -171,8 +189,8 @@
   [{:keys [memory pc sp] :as machine}]
   (print (char (memory sp)))
   (assoc machine
-    :pc (inc pc)
-    :sp (inc sp)))
+         :pc (inc pc)
+         :sp (inc sp)))
 
 
 (defn make-operation
@@ -185,16 +203,16 @@
     in the stack. Returns a new machine with the program counter
     and the stack pointer increased."
     (assoc machine
-      :memory (assoc memory
-                (inc sp)
-                (operation (memory (inc sp))
-                   (memory sp)))
-      :pc (inc pc)
-      :sp (inc sp))))
+           :memory (assoc memory
+                          (inc sp)
+                          (operation (memory (inc sp))
+                                     (memory sp)))
+           :pc (inc pc)
+           :sp (inc sp))))
+
 
 (def operations
-  {
-   1 nop
+  {1 nop
    2 ld
    3 ldi
    4 ct
@@ -219,8 +237,8 @@
    23 jpc
    24 jpi
    25 out
-   26 chr
-   })
+   26 chr})
+
 
 (defn execute
   "Function that takes a machine code in the form of a vector
@@ -238,6 +256,9 @@
 
 
 (defn tokenizer
+  "Function that takes the name of a file containing a Von
+  Neumann Assembly script and converts it to a sequence of symbols
+  and numbers corresponding to the file. It ignores comments."
   [file-name]
   (as-> (slurp file-name) here
         (clojure.string/replace here
@@ -248,9 +269,9 @@
         (remove #(= % "") here)
         (map clojure.edn/read-string here)))
 
+
 (def tokens-to-opcodes
-  {
-   'hlt 0
+  {'hlt 0
    'nop 1
    'ld 2
    'ldi 3
@@ -273,50 +294,145 @@
    'cgt 20
    'cge 21
    'jp 22
+   'jpc 23
    'jpi 24
    'out 25
-   'chr 26
-   })
+   'chr 26})
+
+
+(defn correct-operands?
+  "Function that takes a sequence of assembly tokens and verifies that
+  a value exists where it is expected. Returns true if operands are correct,
+  throws an exception otherwise."
+  [tokens]
+  (loop [tokens tokens]
+    (if (zero? (count tokens))
+      true
+      (if (or (= 'ld (first tokens))
+              (= 'ct (first tokens))
+              (= 'st (first tokens))
+              (= 'jp (first tokens))
+              (= 'jpc (first tokens)))
+        (if (not (contains? tokens-to-opcodes (second tokens)))
+          (recur (rest tokens))
+          (throw (Exception. (str "Invalid syntax error after: " (first tokens)))))
+        (recur (rest tokens))))))
+
+
+(defn not-redefined-labels?
+  "Function that receives a sequence of assembly tokens and verifies that
+  there are not redefined labels. Returns true if checks are correct,
+  throws an exception otherwise."
+  [tokens]
+  (loop [tokens tokens
+         labels #{}]
+    (if (zero? (count tokens))
+      true
+      (if (= 'label (first tokens))
+        (if (contains? labels (second tokens)) ; Already defined label
+          (throw (Exception. (str "Redefined label error with: " (second tokens))))
+          (recur (rest (rest tokens)) ; Add current label to the labels set
+                 (conj labels (second tokens))))
+        (recur (rest tokens) ; Not a label
+               labels)))))
+
+
+(defn not-missing-declaration?
+  "Function that receives a sequence of assembly tokens and verifies that
+  there are not missing declarations of labels. Returns true if checks
+  are correct, throws an exception otherwise."
+  [tokens]
+  (loop [tokens tokens
+         used-labels #{}
+         declared-labels #{}]
+    (if (zero? (count tokens))
+      ;; Compute difference between the used labels and the declared labels
+      (let [missing-labels (clojure.set/difference used-labels declared-labels)]
+        (if (not (empty? missing-labels))
+          ;; There are missing declarations
+          (throw (Exception. (str "Missing label declaration of:" missing-labels)))
+          ;; No missing declarations
+          true))
+      ;; Check if the next token is an operation needing a value, with a label
+      (if (and (or (= 'ld (first tokens))
+                   (= 'ct (first tokens))
+                   (= 'st (first tokens))
+                   (= 'jp (first tokens))
+                   (= 'jpc (first tokens)))
+               (instance? clojure.lang.Symbol (second tokens)))
+        ;; Add current label to used-labels
+        (recur (rest tokens)
+               (conj used-labels (second tokens))
+               declared-labels)
+        ;; Check if next token is a label directive
+        (if (= 'label (first tokens))
+          ;; Add current label to declared-labels
+          (recur (rest tokens)
+                 used-labels
+                 (conj declared-labels (second tokens)))
+          ;; Not an operation with value or label directive
+          (recur (rest tokens)
+                 used-labels
+                 declared-labels))))))
+
 
 (defn correct-syntax?
+  "Function that receives a sequence of assembly tokens and
+  verifies that its syntax is correct. Returns true if all checks
+  are correct. An exception is thrown otherwise."
   [tokens]
-  true)
+  (and (correct-operands? tokens)
+       (not-redefined-labels? tokens)
+       (not-missing-declaration? tokens)))
+
 
 (defn replace-labels
+  "Function that takes a sequence representing the machine code
+  and a dictionary with pairs (label, value) and replaces labels
+  found in the code to its corresponding number value. Returns
+  a new sequence with the labels replaced."
   [code labels]
   (println labels)
   (map #(labels % %) code))
 
+
 (defn assembling-handler
+  "Function that takes a sequence of assembly tokens and returns
+  a sequence corresponding to the Von Neumann machine code."
   [tokens]
-    (loop [code []
-           tokens tokens
-           labels {}]
-      (if (zero? (count tokens))
-        (replace-labels (reverse code) labels)
-        (cond
-          ; Add to the labels map a binding pointing to the next free index of memory
-          (= 'label (first tokens)) (recur code
-                                           (rest (rest tokens))
-                                           (assoc labels
-                                             (second tokens) (count code)))
+  (loop [code []
+         tokens tokens
+         labels {}]
+    (if (zero? (count tokens))
+      (replace-labels (reverse code) labels)
+      (cond
+        ;; Add to the labels map a binding pointing to the next free index of memory
+        (= 'label (first tokens)) (recur code
+                                         (rest (rest tokens))
+                                         (assoc labels
+                                                (second tokens) (count code)))
 
-          ; Add to the code a value of data in the next free index of memory
-          (= 'data (first tokens)) (recur (cons (second tokens)
-                                                code)
-                                          (rest (rest tokens))
-                                          labels)
+        ;; Add to the code a value of data in the next free index of memory
+        (= 'data (first tokens)) (recur (cons (second tokens)
+                                              code)
+                                        (rest (rest tokens))
+                                        labels)
 
-          ; Convert token to opcode and add to the code
-          :else (recur (cons (tokens-to-opcodes (first tokens) (first tokens)) code)
-                       (rest tokens)
-                       labels)))))
+        ;; Convert token to opcode and add to the code
+        :else (recur (cons (tokens-to-opcodes (first tokens) (first tokens)) code)
+                     (rest tokens)
+                     labels)))))
+
 
 (defn assemble
+  "Function that receives the name of a file containing
+  Von Neumman Assembly code and transforms the code into
+  machine code. Returns a sequence with the machine code."
   [file-name]
   (let [tokens (tokenizer file-name)]
     (if (correct-syntax? tokens)
       (assembling-handler tokens)
       nil)))
+
 
 (assemble "proyectointegrador/suma.von")
