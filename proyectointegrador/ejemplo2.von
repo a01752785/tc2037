@@ -1,0 +1,28 @@
+;----------------------------------------------------------
+; Archivo: ejemplo2.von
+; (C) 2022 Ariel Ortiz, ITESM CEM.
+;
+; Codigo fuente para el ensamblador del simulador de
+; una maquina de Von Neumann.
+;----------------------------------------------------------
+
+    jp inicio
+label p data mensaje
+label mensaje
+    data 72 data 101 data 108 data 108 data 111 data 44 data 32
+    data 87 data 111 data 114 data 108 data 100 data 33 data 0
+label inicio
+    ld p
+    ldi
+    eqz
+    jpc fin
+    ld p
+    ldi
+    chr
+    ld p
+    ct 1
+    add
+    st p
+    jp inicio
+label fin
+    hlt

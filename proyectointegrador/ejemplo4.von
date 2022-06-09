@@ -1,0 +1,62 @@
+;----------------------------------------------------------
+; Archivo: ejemplo4.von
+; (C) 2022 Ariel Ortiz, ITESM CEM.
+;
+; Codigo fuente para el ensamblador del simulador de
+; una maquina de Von Neumann.
+;----------------------------------------------------------
+
+label loop_store
+    ld i
+    ld max
+    cge
+    jpc continue1
+    ld i
+    ct 2
+    mul
+    ld ptr
+    sti
+    ld i
+    ct 1
+    add
+    st i
+    ld ptr
+    ct 1
+    add
+    st ptr
+    jp loop_store
+label continue1
+    ct 0
+    st i
+    ct something
+    st ptr
+label loop_print
+    ld i
+    ld max
+    cge
+    jpc continue2
+    ld ptr
+    ldi
+    out
+    ld i
+    ct 1
+    add
+    st i
+    ld ptr
+    ct 1
+    add
+    st ptr
+    ld i
+    ct 5
+    rem
+    jpc loop_print
+    ct 10
+    chr
+    jp loop_print
+label continue2
+    hlt
+
+label i data 0
+label max data 50
+label ptr data something
+label something

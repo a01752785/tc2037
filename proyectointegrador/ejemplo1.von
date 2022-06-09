@@ -1,4 +1,10 @@
-; Calcular e imprimir el factorial de n
+;----------------------------------------------------------
+; Archivo: ejemplo1.von
+; (C) 2022 Ariel Ortiz, ITESM CEM.
+;
+; Codigo fuente para el ensamblador del simulador de
+; una maquina de Von Neumann.
+;----------------------------------------------------------
 
 label inicio_ciclo
 

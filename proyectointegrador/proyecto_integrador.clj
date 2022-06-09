@@ -19,7 +19,7 @@
   "Function that takes a von neumann machine and performs
   no operation on it. Returns a new machine with the program
   counter increased."
-  [{:keys [memory pc sp] :as machine}]
+  [{:keys [pc] :as machine}]
   (assoc machine :pc (inc pc)))
 
 
@@ -90,7 +90,7 @@
 (defn vnm-pop
   "Function that takes a von neumann machine and discards the
   top of the stack."
-  [{:keys [memory pc sp] :as machine}]
+  [{:keys [pc sp] :as machine}]
   (assoc machine
          :pc (inc pc)
          :sp (inc sp)))
@@ -143,7 +143,7 @@
   "Function that takes a von neumann machine and continues
   program execution at the instruction contained at memory
   location index."
-  [{:keys [memory pc sp] :as machine}]
+  [{:keys [memory pc] :as machine}]
   (assoc machine :pc (memory (inc pc))))
 
 
@@ -164,7 +164,7 @@
   "Function that takes a von neumann machine, pops index
   from the stack. Continue program execution at the instruction
   contained at memory location index."
-  [{:keys [memory pc sp] :as machine}]
+  [{:keys [memory sp] :as machine}]
   (assoc machine
          :pc (memory sp)
          :sp (inc sp)))
@@ -246,7 +246,7 @@
   opcode dictionary."
   [code size]
   (loop [machine (make-machine code size)]
-    (let [{:keys [memory pc sp]} machine
+    (let [{:keys [memory pc]} machine
           opcode (memory pc)]
       (if (zero? opcode)
         (print "\nProgram terminated.\n")
@@ -392,7 +392,6 @@
   found in the code to its corresponding number value. Returns
   a new sequence with the labels replaced."
   [code labels]
-  (println labels)
   (map #(labels % %) code))
 
 
@@ -435,4 +434,8 @@
       nil)))
 
 
-(assemble "proyectointegrador/suma.von")
+(execute (assemble "proyectointegrador/ejemplo1.von") 128)
+(execute (assemble "proyectointegrador/ejemplo2.von") 128)
+(execute (assemble "proyectointegrador/ejemplo3.von") 128)
+(execute (assemble "proyectointegrador/ejemplo4.von") 128)
+(execute (assemble "proyectointegrador/ejemplo5.von") 128)
