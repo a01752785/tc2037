@@ -426,14 +426,14 @@
 (defn assemble
   "Function that receives the name of a file containing
   Von Neumman Assembly code and transforms the code into
-  machine code. Returns a sequence with the machine code."
+  machine code. Returns a vector with the machine code."
   [file-name]
   (let [tokens (tokenizer file-name)]
     (if (correct-syntax? tokens)
-      (assembling-handler tokens)
+      (vec (assembling-handler tokens))
       nil)))
 
-
+(assemble "proyectointegrador/suma.von")
 (execute (assemble "proyectointegrador/ejemplo1.von") 128)
 (execute (assemble "proyectointegrador/ejemplo2.von") 128)
 (execute (assemble "proyectointegrador/ejemplo3.von") 128)
