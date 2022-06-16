@@ -1,11 +1,11 @@
-;----------------------------------------------------------
-; Proyecto integrador: Simulador y ensamblador de una
-; máquina de Von Neumann
-; Fecha: 15 de junio, 2022.
-; Autores:
-;          A01752789 Luis Humberto Romero Perez
-;          A01752785 David Damian Galan
-;----------------------------------------------------------
+;; ----------------------------------------------------------
+;; Proyecto integrador: Simulador y ensamblador de una
+;; máquina de Von Neumann
+;; Fecha: 15 de junio, 2022.
+;; Autores:
+;;          A01752789 Luis Humberto Romero Perez
+;;          A01752785 David Damian Galan
+;; ----------------------------------------------------------
 (ns proyecto-integrador)
 
 
@@ -440,6 +440,7 @@
     (if (correct-syntax? tokens)
       (vec (assembling-handler tokens))
       nil)))
+
 
 (assemble "proyectointegrador/suma.von")
 (execute (assemble "proyectointegrador/ejemplo1.von") 128)
